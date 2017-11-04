@@ -1,6 +1,6 @@
 class Oystercard
 
-  attr_reader :balance
+  attr_accessor :balance
 
   def initialize
     @balance = 0
@@ -8,6 +8,10 @@ class Oystercard
 
   def get_balance
     balance
+  end
+
+  def top_up(topup)
+    self.balance += topup
   end
 
 
