@@ -1,4 +1,4 @@
-Maximum_value = 90;
+MAXIMUM_BALANCE = 90;
 
 class Oystercard
 
@@ -12,15 +12,19 @@ class Oystercard
     balance
   end
 
-  def top_up(topup)
-    fail "maximum top-up value of $#{Maximum_value} has been reached" unless balance_exceeded?(topup)
-    self.balance += topup
+  def top_up(amount)
+    fail "maximum top-up value of $#{MAXIMUM_BALANCE} has been reached" unless balance_exceeded?(amount)
+    self.balance += amount
+  end
+
+  def deduct(amount)
+    self.balance -= amount
   end
 
   private
 
-  def balance_exceeded?(topup)
-    self.balance + topup < Maximum_value
+  def balance_exceeded?(amount)
+    self.balance + amount <= MAXIMUM_BALANCE
   end
 
 
