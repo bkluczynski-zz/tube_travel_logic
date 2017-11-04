@@ -1,4 +1,5 @@
 MAXIMUM_BALANCE = 90;
+MINIMUM_BALANCE = 1;
 
 class Oystercard
 
@@ -14,7 +15,7 @@ class Oystercard
   end
 
   def top_up(amount)
-    fail "maximum top-up value of $#{MAXIMUM_BALANCE} has been reached" unless balance_exceeded?(amount)
+    fail "maximum top-up value of $#{MAXIMUM_BALANCE} has been reached" unless balance_not_exceeded?(amount)
     self.balance += amount
   end
 
@@ -27,6 +28,7 @@ class Oystercard
   end
 
   def touch_in
+    fail "Insufficient funds, please top-up" unless can_travel?
     self.in_journey = true
   end
 
@@ -36,8 +38,12 @@ class Oystercard
 
   private
 
-  def balance_exceeded?(amount)
+  def balance_not_exceeded?(amount)
     self.balance + amount <= MAXIMUM_BALANCE
+  end
+
+  def can_travel?
+    balance >= MINIMUM_BALANCE
   end
 
 

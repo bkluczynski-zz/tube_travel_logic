@@ -37,14 +37,20 @@ describe Oystercard do
     end
 
     it 'should be able to touch in' do
+      subject.top_up(1)
       subject.touch_in
       expect(subject).to be_in_journey
     end
 
     it 'should be able to touch_out' do
+      subject.top_up(1)
       subject.touch_in
       subject.touch_out
       expect(subject).not_to be_in_journey
+    end
+
+    it 'should not allow to touch in if balance is below 1 pound' do
+      expect { subject.touch_in }.to raise_error { "Insufficient funds, please top-up" }
     end
 
   end
