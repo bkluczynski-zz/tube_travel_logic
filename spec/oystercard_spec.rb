@@ -26,4 +26,22 @@ describe Oystercard do
 
   end
 
+  describe '#journey' do
+
+    before(:each) do
+      subject.top_up(1)
+      subject.touch_in("Dalston Kingsland")
+    end
+
+    it 'should not allow to touch in if balance is below 1 pound' do
+      subject.touch_out("Shoreditch Highstreet")
+      expect { subject.touch_in("Dalston Kingsland") }.to raise_error { "Insufficient funds, please top-up" }
+    end
+
+    it 'should deduct the minimum fare upon finishing a journey' do
+      expect { subject.touch_out("Shoreditch Highstreet") }.to change { subject.get_balance }.from(1).to(0)
+    end
+
+  end
+
 end

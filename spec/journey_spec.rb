@@ -6,31 +6,23 @@ describe Journey do
   describe '#in_journey' do
 
     before(:each) do
-      @oyster = Oystercard.new
+      @journey = Journey.new
+      @oyster = Oystercard.new(@journey)
       @oyster.top_up(1)
-      subject.touch_in("Dalston Kingsland", @oyster)
+      @oyster.touch_in("Dalston Kingsland")
     end
 
     it 'should be able to touch in' do
-      expect(subject).to be_in_journey
+      expect(@journey).to be_in_journey
     end
 
     it 'should be able to touch_out' do
-      subject.touch_out("Shoreditch Highstreet", @oyster)
-      expect(subject).not_to be_in_journey
-    end
-
-    it 'should not allow to touch in if balance is below 1 pound' do
-      subject.touch_out("Shoreditch Highstreet", @oyster)
-      expect { subject.touch_in("Dalston Kingsland", @oyster) }.to raise_error { "Insufficient funds, please top-up" }
-    end
-
-    it 'should deduct the minimum fare upon finishing a journey' do
-      expect { subject.touch_out("Shoreditch Highstreet", @oyster) }.to change { @oyster.get_balance }.from(1).to(0)
+      @oyster.touch_out("Shoreditch Highstreet")
+      expect(@journey).not_to be_in_journey
     end
 
     it 'allows to store entry station' do
-      expect(subject.entry_station).to eq('Dalston Kingsland')
+      expect(@journey.entry_station).to eq('Dalston Kingsland')
     end
 
     it 'allows to store a journey history' do
@@ -38,8 +30,8 @@ describe Journey do
     end
 
     it 'creates a list of journeys' do
-      subject.touch_out('Shoreditch Highstreet', @oyster)
-      expect(subject.journey_list).to eq({ 'Dalston Kingsland' => 'Shoreditch Highstreet'})
+      @oyster.touch_out('Shoreditch Highstreet')
+      expect(@journey.journey_list).to eq({ 'Dalston Kingsland' => 'Shoreditch Highstreet'})
     end
 
   end
