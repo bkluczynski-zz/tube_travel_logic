@@ -44,4 +44,11 @@ describe Oystercard do
 
   end
 
+  describe '#fare' do
+    it 'deducts 6 pounds when entry station is nil' do
+      subject.top_up(10)
+      expect { subject.touch_out("Shoreditch Highstreet") }.to change { subject.get_balance }.from(10).to(4)
+    end
+  end
+
 end

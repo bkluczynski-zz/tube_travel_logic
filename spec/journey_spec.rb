@@ -36,5 +36,18 @@ describe Journey do
 
   end
 
+  describe '#fare' do
+
+    before(:each) do
+      @journey = Journey.new()
+      @oyster = Oystercard.new(@journey)
+    end
+    it 'should return penalty of six if there was no entry station' do
+      @oyster.top_up(10)
+      expect(@journey.fare).to eq(6)
+    end
+
+  end
+
 
 end
