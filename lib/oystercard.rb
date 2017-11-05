@@ -20,13 +20,13 @@ class Oystercard
     self.balance += amount
   end
 
-  def touch_in(station)
+  def touch_in(station = nil)
     fail "Insufficient funds, please top-up" unless can_travel?
-    journey.entry_station = station
+    journey.start(station)
   end
 
-  def touch_out(station)
-    journey.journey_list[journey.entry_station] = station
+  def touch_out(station = nil)
+    journey.finish(station)
     deduct(journey.fare)
     journey.entry_station = nil
   end
