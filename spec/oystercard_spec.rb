@@ -12,6 +12,7 @@ describe Oystercard do
 
     before(:each) do
       @maximum_balance = Oystercard::MAXIMUM_BALANCE
+      @minimum_fare = Oystercard::MINIMUM_BALANCE
     end
 
     it 'should allow to topup an oyster with a chosen sum of money' do
@@ -23,34 +24,44 @@ describe Oystercard do
       expect { subject.top_up(1) }.to raise_error('maximum top-up value of $90 has been reached')
     end
 
-    it 'should allow to deduct money from an oyster' do
-      subject.top_up(@maximum_balance)
-      expect { subject.deduct(10) }.to change { subject.get_balance }.from(@maximum_balance).to(80)
-    end
-
   end
 
   describe '#in_journey' do
 
-    it 'should have journey? method defaulted to false' do
-      expect(subject.in_journey?).to eq(false)
+    before(:each) do
+      subject.top_up(1)
+      subject.touch_in("Dalston Kingsland")
     end
 
     it 'should be able to touch in' do
-      subject.top_up(1)
-      subject.touch_in
       expect(subject).to be_in_journey
     end
 
     it 'should be able to touch_out' do
-      subject.top_up(1)
-      subject.touch_in
-      subject.touch_out
+      subject.touch_out("Shoreditch Highstreet")
       expect(subject).not_to be_in_journey
     end
 
     it 'should not allow to touch in if balance is below 1 pound' do
-      expect { subject.touch_in }.to raise_error { "Insufficient funds, please top-up" }
+      subject.touch_out("Shoreditch Highstreet")
+      expect { subject.touch_in("Dalston Kingsland") }.to raise_error { "Insufficient funds, please top-up" }
+    end
+
+    it 'should deduct the minimum fare upon finishing a journey' do
+      expect { subject.touch_out("Shoreditch Highstreet") }.to change { subject.get_balance }.from(1).to(0)
+    end
+
+    it 'allows to store entry station' do
+      expect(subject.entry_station).to eq('Dalston Kingsland')
+    end
+
+    it 'allows to store a journey history' do
+      expect(subject.journey_list).to eq({})
+    end
+
+    it 'creates a list of journeys' do
+      subject.touch_out('Shoreditch Highstreet')
+      expect(subject.journey_list).to eq({ 'Dalston Kingsland' => 'Shoreditch Highstreet'})
     end
 
   end
